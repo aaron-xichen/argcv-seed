@@ -8,6 +8,7 @@ ADD_DEPENDENCIES(argcv_seed argcv)
 
 
 TARGET_LINK_LIBRARIES(argcv_seed argcv_static)
+TARGET_LINK_LIBRARIES(argcv_seed argcv_sys_static)
 TARGET_LINK_LIBRARIES(argcv_seed pthread)
 
 #  executable properties
