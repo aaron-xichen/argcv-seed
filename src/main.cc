@@ -33,9 +33,11 @@ int main(int argc, char* argv[]) {
     //argcv::timer::timer t;
     //printf("argcv_seed .... \n");
     //printf("up to : %f ms\n", t.all());
-    memcpy(proj_work_dir,"/tmp",5);
-    daemon_init("argcv_seed");
-    syslog(LOG_INFO,"hello .. said by argcv_seed ... \n");
-    daemon_destroy();
+    //memcpy(proj_work_dir,"/tmp",5);
+    //daemon_init("argcv_seed");
+    //syslog(LOG_INFO,"hello .. said by argcv_seed ... \n");
+    //daemon_destroy();
+    std::string abc = "here is sth from a to b, there";
+    printf("result : %s\n",replace(abc,"here","[here]").c_str());
     return 0;
 }
