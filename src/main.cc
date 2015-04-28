@@ -1,15 +1,16 @@
 // Copyright 2014 Yu Jing<yujing5b5d@gmail.com>
 #include <cstdio>
 
-#include <syslog.h> // syslog
+#include <syslog.h>  // syslog
 
 #include <vector>
 #include <string>
 
 #include "argcv/argcv.hh"
 #include "argcv/alg/alg.hh"
-#include "argcv/ml/corpus/corpus.hh"
-#include "argcv/ml/corpus/ds.hh"
+#include "argcv/ir/ir.hh"
+#include "argcv/ml/ml.hh"
+#include "argcv/ml/perceptron.hh"
 #include "argcv/net/co_lacus.hh"
 #include "argcv/random/random.hh"
 #include "argcv/string/string.hh"
@@ -22,22 +23,26 @@ using argcv::argcv_info;
 
 using argcv::string::blz_hasher;
 
-using argcv::ml::corpus::tf_idf;
-using argcv::ml::corpus::dataset_d;
+using argcv::ir::tf_idf;
+using argcv::ml::dataset_d;
 
 using namespace argcv::string;
 
 using namespace argcv::net;
+using namespace argcv::ml;
 
 int main(int argc, char* argv[]) {
-    //argcv::timer::timer t;
-    //printf("argcv_seed .... \n");
-    //printf("up to : %f ms\n", t.all());
-    //memcpy(proj_work_dir,"/tmp",5);
-    //daemon_init("argcv_seed");
-    //syslog(LOG_INFO,"hello .. said by argcv_seed ... \n");
-    //daemon_destroy();
-    std::string abc = "here is sth from a to b, there";
-    printf("result : %s\n",replace(abc,"here","[here]").c_str());
+    perceptron mml(10);
+    mml.learn();
+    std::vector<double> x1 = {0, 0, 1};
+    std::vector<double> x2 = {1, 0, 0};
+    std::vector<double> x3 = {0, 1, 1};
+    std::vector<double> x4 = {1, 1, 0};
+    mml.add(x1, 0);
+    mml.add(x2, 0);
+    mml.add(x3, 1);
+    mml.add(x4, 1);
+    mml.learn();
+    printf("predict: %d \n", mml.predict(x3));
     return 0;
 }
