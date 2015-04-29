@@ -12,6 +12,7 @@
 #include "argcv/ml/ml.hh"
 #include "argcv/ml/perceptron.hh"
 #include "argcv/ml/aprf.hh"
+#include "argcv/ml/naive_bayes.hh" // 
 #include "argcv/net/co_lacus.hh"
 #include "argcv/random/random.hh"
 #include "argcv/string/string.hh"
@@ -33,57 +34,40 @@ using namespace argcv::random;
 using namespace argcv::net;
 using namespace argcv::ml;
 
-int y(std::vector<double> x) {
+using namespace std;
+
+bool y(std::vector<double> x) {
     // printf("%f \n",x[0] * 0.2 + x[1] * 0.8 + x[2] * 0.3);
-    if (x[0] * 0.1 + x[1] * 0.8 - x[2] * 0.3 - x[3] * 0.1 + x[4] * 0.2 + 0.2 > 0.5) {
-        return 1;
-    } else {
-        return -1;
-    }
+    return (x[0] * 0.1 * x[1] * 0.8 - x[2] * 0.3 - x[3] * 0.1 + x[4] * 0.2 + 0.2 > 0.5);
+}
+
+std::pair<std::vector<std::string>,std::string> get_pair(const std::string & x1,
+                    const std::string & x2, const std::string & y) {
+    std::vector<std::string> x = {x1,x2};
+    return std::make_pair(x,y);
 }
 
 int main(int argc, char* argv[]) {
-    perceptron mml;
-    for (int i = 0; i < 2600; i++) {
-        double x1 = (random_int() % 100) + 0.0001;
-        double x2 = (random_int() % 100) + 0.0001;
-        double x3 = (random_int() % 100) + 0.0001;
-        double x4 = (random_int() % 100) + 0.0001;
-        double x5 = (random_int() % 100) + 0.0001;
-        std::vector<double> x
-            = {(2.0 / x1) - 1, (2.0 / x2) - 1, (2.0 / x3) - 1, (2.0 / x4) - 1, (2.0 / x5) - 1};
-        // printf("## %f - %f - %f \n",(2.0 / random_int()) - 1, (2.0 / random_int()) - 1, (2.0 /
-        // random_int()) - 1);
-        mml.add(x, y(x));
-    }
+    naive_bayes nb;
+    nb.add(get_pair("1","S","-1"));
+    nb.add(get_pair("1","M","-1"));
+    nb.add(get_pair("1","M","1"));
+    nb.add(get_pair("1","S","1"));
+    nb.add(get_pair("1","S","-1"));
+    
+    nb.add(get_pair("2","S","-1"));
+    nb.add(get_pair("2","M","-1"));
+    nb.add(get_pair("2","M","1"));
+    nb.add(get_pair("2","L","1"));
+    nb.add(get_pair("2","L","1"));
+    
+    nb.add(get_pair("3","L","1"));
+    nb.add(get_pair("3","M","1"));
+    nb.add(get_pair("3","M","1"));
+    nb.add(get_pair("3","L","1"));
+    nb.add(get_pair("3","L","-1"));
 
-    mml.learn();
-    mml.dump();
-
-    aprf f;
-    size_t sz = 0;
-    bool listed = false;
-
-    for (double i = -1; i < 1; i += 0.1) {
-        for (double j = -1; j < 1; j += 0.1) {
-            for (double k = -1; k < 1; k += 0.1) {
-                for (double m = -1; m < 1; m += 0.1) {
-                    for (double n = -1; n < 1; n += 0.1) {
-                        std::vector<double> x = {i, j, k, m, n};
-                        f.add(mml.predict(x) > 0, y(x) > 0);
-                        if (!listed && ((mml.predict(x) > 0) != (y(x) > 0))) {
-                            // printf("%f - %f - %f \n", i, j, k);
-                            listed = true;
-                        }
-                        sz++;
-                    }
-                }
-            }
-        }
-    }
-
-    printf("result :  sz : %zu pre : %f rec : %f ac : %f , f1 : %f \n", sz, f.precision(), f.recall(),
-           f.accuracy(), f.f1());
+    nb.learn();
 
     return 0;
 }
