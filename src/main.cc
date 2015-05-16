@@ -12,7 +12,7 @@
 #include "argcv/ml/ml.hh"
 #include "argcv/ml/perceptron.hh"
 #include "argcv/ml/aprf.hh"
-#include "argcv/ml/naive_bayes.hh" // 
+#include "argcv/ml/naive_bayes.hh"  //
 #include "argcv/net/co_lacus.hh"
 #include "argcv/random/random.hh"
 #include "argcv/string/string.hh"
@@ -20,6 +20,8 @@
 #include "argcv/string/uuid.hh"
 #include "argcv/sys/daemon.h"
 #include "argcv/timer/timer.hh"
+
+#include "argcv/wrapper/leveldb_wr.hh"
 
 using argcv::argcv_info;
 
@@ -36,38 +38,25 @@ using namespace argcv::ml;
 
 using namespace std;
 
-bool y(std::vector<double> x) {
-    // printf("%f \n",x[0] * 0.2 + x[1] * 0.8 + x[2] * 0.3);
-    return (x[0] * 0.1 * x[1] * 0.8 - x[2] * 0.3 - x[3] * 0.1 + x[4] * 0.2 + 0.2 > 0.5);
-}
+using namespace argcv::wrapper::leveldb;
 
-std::pair<std::vector<std::string>,std::string> get_pair(const std::string & x1,
-                    const std::string & x2, const std::string & y) {
-    std::vector<std::string> x = {x1,x2};
-    return std::make_pair(x,y);
+bool key_value_printer(const std::string& k, const std::string& v) {
+    printf("key: %s \t value: %s \n", k.c_str(), v.c_str());
+    return true;
 }
 
 int main(int argc, char* argv[]) {
-    naive_bayes nb;
-    nb.add(get_pair("1","S","-1"));
-    nb.add(get_pair("1","M","-1"));
-    nb.add(get_pair("1","M","1"));
-    nb.add(get_pair("1","S","1"));
-    nb.add(get_pair("1","S","-1"));
-    
-    nb.add(get_pair("2","S","-1"));
-    nb.add(get_pair("2","M","-1"));
-    nb.add(get_pair("2","M","1"));
-    nb.add(get_pair("2","L","1"));
-    nb.add(get_pair("2","L","1"));
-    
-    nb.add(get_pair("3","L","1"));
-    nb.add(get_pair("3","M","1"));
-    nb.add(get_pair("3","M","1"));
-    nb.add(get_pair("3","L","1"));
-    nb.add(get_pair("3","L","-1"));
+    ldb_wrapper lw("leveldb.data", 1024, true);
+    lw.put("a", "00");
+    lw.put("a01", "01");
+    lw.put("a02", "02");
+    lw.put("a03", "03");
+    lw.put("b01", "04");
+    lw.put("b03", "05");
+    printf("exist a? %d \n", lw.exist("a") ? 1 : 0);
 
-    nb.learn();
+    lw.rm("a02");
+    lw.start_with("a", key_value_printer);
 
     return 0;
 }
