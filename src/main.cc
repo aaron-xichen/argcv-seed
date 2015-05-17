@@ -40,23 +40,34 @@ using namespace std;
 
 using namespace argcv::wrapper::leveldb;
 
-bool key_value_printer(const std::string& k, const std::string& v) {
-    printf("key: %s \t value: %s \n", k.c_str(), v.c_str());
-    return true;
+bool key_value_printer(const std::string& k, const std::string& v, void* data) {
+    int* _offset = (int*)data;
+    printf("%d key: %s \t value: %s \n", (*_offset)++, k.c_str(), v.c_str());
+    return true;  //(*_offset) < 2;
 }
 
 int main(int argc, char* argv[]) {
-    ldb_wrapper lw("leveldb.data", 1024, true);
+    const char* ddir = "leveldb.data";
+    ldb_wrapper lw(ddir, 0, true);
+    lw.conn();
     lw.put("a", "00");
     lw.put("a01", "01");
     lw.put("a02", "02");
-    lw.put("a03", "03");
+    // lw.put("a03", "03");
+    printf("destroy status : %d \n", ldb_wrapper::destroy(ddir));
+    lw.put("a04", "04");
     lw.put("b01", "04");
     lw.put("b03", "05");
     printf("exist a? %d \n", lw.exist("a") ? 1 : 0);
 
     lw.rm("a02");
-    lw.start_with("a", key_value_printer);
+    int i = 0;
+    lw.start_with("a", key_value_printer, &i);
+
+    lw.close();
+    printf("destroy status : %d \n", ldb_wrapper::destroy(ddir));
+
+    printf("is closed ? %d \n", lw.is_closed() ? 1 : 0);
 
     return 0;
 }
