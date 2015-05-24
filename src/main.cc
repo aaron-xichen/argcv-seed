@@ -50,11 +50,12 @@ using namespace argcv::ir::index::analyzer;
 
 
 int main(int argc, char* argv[]) {
-    for(int i = 0 ; i < 10 ; i ++ ) {
-        printf("next ...\n");
-        fflush(NULL);
-        //usleep(1000000);
-    }
-    echo_server();
+    uuid _uuid;
+    uuid _uuid2(_uuid.str());
+    uuid _uuid3(0,0);
+    printf("id1 : %s\n",_uuid.str().c_str());
+    printf("id2 : %s\n",_uuid2.str().c_str());
+    printf("id3 : %s\n",_uuid3.str().c_str());
+    
     return 0;
 }
