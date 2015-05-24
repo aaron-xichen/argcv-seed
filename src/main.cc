@@ -49,54 +49,6 @@ using namespace argcv::wrapper::leveldb;
 using namespace argcv::ir::index::analyzer;
 
 
-using namespace argcv::net;
-void echo_server() {
-    co_lacus pool(9527, 200000);
-    size_t sz_min_sleep = 50000;
-    size_t sz_max_sleep = 300000;
-    size_t sz_sleep = sz_min_sleep;
-    if (pool._error_no() != 0) {
-        printf("pool establish failed .. %d \n", pool._error_no());
-    } else {
-        printf("pool established .. %d \n", pool._error_no());
-        size_t loop = 0;
-        for (;;) {
-            int id = pool.poll(0);
-            if (id != -1) {
-                sz_sleep = sz_max_sleep;
-                printf("#### id: %d\n", id);
-                co_lacus::conn &c = pool[id];
-                bool st = pool.pull(id, 1);
-                if (st) {
-                    // printf("data:[%s] %lu \n",c.to_str().c_str(), c.to_str().length());
-                    std::string s = c.to_str();
-                    for (size_t i = 0; i < c.to_str().length(); i++) {
-                        printf("%lu %d %c\n", i, c.to_str()[i], c.to_str()[i]);
-                    }
-                    // sleep(3);
-                    c.write(c.to_str(), c.to_str().length());
-                } else {
-                    if (c.closed()) {
-                        printf("is closed .. \n");
-                    } else {
-                        printf("unknown error ? \n status : %hhu\n", c._status());
-                    }
-                }
-                c.flush();
-            } else{
-                printf("sleep ...%lu\n",loop++);
-                fflush(NULL);
-                sz_sleep *= 2;
-                if(sz_sleep > sz_max_sleep){
-                    sz_sleep = sz_max_sleep;
-                }
-                usleep(sz_sleep);
-            }
-        }
-    }
-}
-
-
 int main(int argc, char* argv[]) {
     for(int i = 0 ; i < 10 ; i ++ ) {
         printf("next ...\n");
