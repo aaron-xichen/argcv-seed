@@ -63,6 +63,7 @@ void echo_server() {
         for (;;) {
             int id = pool.poll(0);
             if (id != -1) {
+                sz_sleep = sz_max_sleep;
                 printf("#### id: %d\n", id);
                 co_lacus::conn &c = pool[id];
                 bool st = pool.pull(id, 1);
