@@ -15,6 +15,7 @@
 #include "argcv/ir/index/index.hh"
 #include "argcv/ir/index/analyzer/basic_analyzer.hh"
 #include "argcv/ir/index/analyzer/basic_tokenlizer.hh"
+#include "argcv/ir/index/analyzer/util.hh"
 #include "argcv/ml/ml.hh"
 #include "argcv/ml/perceptron.hh"
 #include "argcv/ml/aprf.hh"
@@ -50,12 +51,7 @@ using namespace argcv::ir::index::analyzer;
 
 
 int main(int argc, char* argv[]) {
-    uuid _uuid;
-    uuid _uuid2(_uuid.str());
-    uuid _uuid3(0,0);
-    printf("id1 : %s\n",_uuid.str().c_str());
-    printf("id2 : %s\n",_uuid2.str().c_str());
-    printf("id3 : %s\n",_uuid3.str().c_str());
-    
+
+
     return 0;
 }
