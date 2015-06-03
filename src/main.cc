@@ -27,6 +27,7 @@
 #include "argcv/string/uuid.hh"
 #include "argcv/sys/daemon.h"
 #include "argcv/timer/timer.hh"
+#include "argcv/thread/th_lacus.hh"
 
 #include "argcv/wrapper/leveldb_wr.hh"
 
@@ -49,9 +50,21 @@ using namespace argcv::wrapper::leveldb;
 
 using namespace argcv::ir::index::analyzer;
 
+using namespace argcv::thread;
+
+void data_printer(int* v) {
+    printf("[start] : %d \n", *v);
+    // usleep(1000000);
+    printf("[ end ] : %d \n", *v);
+}
 
 int main(int argc, char* argv[]) {
-
-
+    thread_lacus<int> thlacus(data_printer);
+    int vals[100];
+    for (int v = 0; v < 100; v++) {
+        vals[v] = v;
+        thlacus.add_task(&vals[v]);
+    }
+    thlacus.join();
     return 0;
 }
