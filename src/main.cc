@@ -27,7 +27,7 @@
 #include "argcv/string/uuid.hh"
 #include "argcv/sys/daemon.h"
 #include "argcv/timer/timer.hh"
-#include "argcv/thread/th_lacus.hh"
+#include "argcv/thread/threads.hh"
 
 #include "argcv/wrapper/leveldb_wr.hh"
 
@@ -59,11 +59,11 @@ void data_printer(int* v) {
 }
 
 int main(int argc, char* argv[]) {
-    thread_lacus<int> thlacus(data_printer);
+    threads<int> thlacus(data_printer);
     int vals[100];
     for (int v = 0; v < 100; v++) {
         vals[v] = v;
-        thlacus.add_task(&vals[v]);
+        thlacus.enqueue(&vals[v]);
     }
     thlacus.join();
     return 0;
