@@ -20,7 +20,7 @@
 #include "argcv/ml/perceptron.hh"
 #include "argcv/ml/aprf.hh"
 #include "argcv/ml/naive_bayes.hh"  //
-#include "argcv/net/co_lacus.hh"
+#include "argcv/net/tcp_listen_lacus.hh"
 #include "argcv/random/random.hh"
 #include "argcv/string/string.hh"
 #include "argcv/string/hash.hh"
@@ -52,19 +52,38 @@ using namespace argcv::ir::index::analyzer;
 
 using namespace argcv::thread;
 
-void data_printer(int* v) {
-    printf("[start] : %d \n", *v);
-    // usleep(1000000);
-    printf("[ end ] : %d \n", *v);
+
+
+void cop(){
+    int test_count = 10000000;
+    int max_v = -1;
+    double max_s = -1;
+    for (int v = 7; v < 50; v++) {
+        int* x = new int[v];
+        int count = 0;
+        for (int i = 0; i < test_count; i++) {
+            memset(x,0,v * sizeof(int));
+            int v2 = 0;
+            int v1 = 0;
+            for (int l = 0; l < 10; l++) x[random_int() % v]++;
+            for(int iv = 0 ; iv < v ; iv  ++) {
+                if(x[iv] == 2) v2 ++;
+                if(x[iv] == 1) v1 ++;
+            }
+            if(v2 == 3 && v1 == 4) count ++;
+        }
+        delete[] x;
+        double score = (double)count / test_count;
+        if(score > max_s) {
+            max_v = v;
+            max_s = score;
+        }
+        printf("v: %d s: %f -- max : v: %d , s: %f\n",v,score,max_v,max_s);
+    }
+
 }
 
+
 int main(int argc, char* argv[]) {
-    threads<int> thlacus(data_printer);
-    int vals[100];
-    for (int v = 0; v < 100; v++) {
-        vals[v] = v;
-        thlacus.enqueue(&vals[v]);
-    }
-    thlacus.join();
     return 0;
 }
