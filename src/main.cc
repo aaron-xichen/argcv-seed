@@ -20,7 +20,8 @@
 #include "argcv/ml/perceptron.hh"
 #include "argcv/ml/aprf.hh"
 #include "argcv/ml/naive_bayes.hh"  //
-#include "argcv/net/tcp_listen_lacus.hh"
+#include "argcv/ml/svm.hh"  //
+#include "argcv/net/tcp_listen.hh"
 #include "argcv/random/random.hh"
 #include "argcv/string/string.hh"
 #include "argcv/string/hash.hh"
@@ -85,5 +86,9 @@ void cop(){
 
 
 int main(int argc, char* argv[]) {
+    std::vector<std::string> elems = utf8split("abcd\u00A0你好世界123\n");
+    for(size_t i =  0 ; i < elems.size(); i ++ ) {
+        printf("%zu [%s]:%lu\n",i,elems[i].c_str(),elems[i].length());
+    }
     return 0;
 }
